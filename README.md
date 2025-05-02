@@ -127,6 +127,13 @@ Go to: `http://localhost:3000`
 ```
 
 ---
+## Screenshots
+<img width="1470" alt="Screenshot 2025-05-02 at 7 59 09 PM" src="https://github.com/user-attachments/assets/5d0e5508-7f1e-4f9a-b621-22d73c99bf73" />
+<img width="1470" alt="Screenshot 2025-05-02 at 7 58 50 PM" src="https://github.com/user-attachments/assets/617a75dd-1b01-4d54-b80e-53f8463f3772" />
+<img width="1470" alt="Screenshot 2025-05-02 at 7 57 33 PM" src="https://github.com/user-attachments/assets/aedf6153-05f5-4393-acab-72ea66e5e6c4" />
+<img width="1470" alt="Screenshot 2025-05-02 at 7 57 18 PM" src="https://github.com/user-attachments/assets/ca9caf74-cd5b-4eab-9308-0d79b27ecedb" />
+<img width="1470" alt="Screenshot 2025-05-02 at 7 57 00 PM" src="https://github.com/user-attachments/assets/1ddcea62-d34f-456a-aaf0-6c648c07cd77" />
+
 
 ## 🔗 API Endpoints
 
@@ -171,7 +178,7 @@ Recommended: [**Vercel**](https://vercel.com)
 
 Set environment variables in the Vercel dashboard.
 
-Live Demo: \[Add your link here]
+Live Demo:https://smartnotes-fbh9.vercel.app/
 
 ---
 
@@ -199,5 +206,3 @@ Live Demo: \[Add your link here]
 **Hrithik** — [LinkedIn](https://www.linkedin.com/in/hrithikgarg1/)
 
 ---
-
-Would you like me to save this as a file or help you push it to your GitHub repo?
