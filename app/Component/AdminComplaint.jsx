@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
 import EditComplaintModal from './EditModal'; // Import the modal component
 
 export default function AdminComplaintsTable() {
@@ -14,10 +15,16 @@ export default function AdminComplaintsTable() {
     const fetchComplaints = async () => {
       try {
         const res = await fetch('/api/complaint');
-        const data = await res.json();
-        setComplaints(data);
+        if (res.ok) {
+          const data = await res.json();
+          setComplaints(data);
+          toast.success('Complaints loaded');
+        } else {
+          toast.error('Failed to fetch complaints');
+        }
       } catch (err) {
         console.error('Failed to fetch complaints:', err);
+        toast.error('Error fetching complaints');
       } finally {
         setLoading(false);
       }
@@ -43,11 +50,14 @@ export default function AdminComplaintsTable() {
     setComplaints(complaints.map((complaint) => 
       complaint._id === updatedComplaint._id ? updatedComplaint : complaint
     ));
+    toast.success('Complaint updated in table');
   };
 
   const handleDelete = async (complaintId) => {
     const confirmed = window.confirm("Are you sure you want to delete this complaint?");
     if (!confirmed) return;
+
+    const toastId = toast.loading('Deleting complaint...');
 
     try {
       const res = await fetch(`/api/complaint/${complaintId}`, {
@@ -57,11 +67,13 @@ export default function AdminComplaintsTable() {
       if (res.ok) {
         // Filter out the deleted complaint from the state
         setComplaints(complaints.filter((complaint) => complaint._id !== complaintId));
+        toast.success('Complaint deleted successfully', { id: toastId });
       } else {
-        console.error("Failed to delete complaint");
+        toast.error('Failed to delete complaint', { id: toastId });
       }
     } catch (err) {
       console.error('Failed to delete complaint:', err);
+      toast.error('Error deleting complaint', { id: toastId });
     }
   };
 
@@ -69,15 +81,15 @@ export default function AdminComplaintsTable() {
     <div className="overflow-x-auto p-4">
       <h2 className="text-xl font-bold mb-4">Admin Complaint Management</h2>
       <table className="min-w-full table-auto border-collapse border  border-gray-300">
-        <thead>{/* Removed whitespace between tags */}
-          <tr className="bg-gray-100">{/* Removed whitespace between tags */}
-            <th className="border px-4 py-2">Title</th>{/* Removed whitespace between tags */}
-            <th className="border px-4 py-2">Category</th>{/* Removed whitespace between tags */}
-            <th className="border px-4 py-2">Priority</th>{/* Removed whitespace between tags */}
-            <th className="border px-4 py-2">Status</th>{/* Removed whitespace between tags */}
-            <th className="border px-4 py-2">Date</th>{/* Removed whitespace between tags */}
-            <th className="border px-4 py-2">Actions</th>{/* Removed trailing whitespace */}
-          </tr>{/* Removed whitespace between tags */}
+        <thead>
+          <tr className="bg-gray-100">
+            <th className="border px-4 py-2">Title</th>
+            <th className="border px-4 py-2">Category</th>
+            <th className="border px-4 py-2">Priority</th>
+            <th className="border px-4 py-2">Status</th>
+            <th className="border px-4 py-2">Date</th>
+            <th className="border px-4 py-2">Actions</th>
+          </tr>
         </thead>
         <tbody>
           {complaints.length > 0 ? complaints.map((complaint) => (
@@ -87,7 +99,7 @@ export default function AdminComplaintsTable() {
               <td className="border px-4 py-2">{complaint.priority}</td>
               <td className="border px-4 py-2">{complaint.status}</td>
               <td className="border px-4 py-2">{new Date(complaint.dateSubmitted).toLocaleDateString()}</td>
-              <td className="border px-4 py-2 flex justify-center gap-2 "> 
+              <td className="border px-4 py-2 flex justify-center gap-2"> 
                 <button 
                   className="text-blue-500 hover:text-blue-700 mr-2" 
                   onClick={() => handleEditClick(complaint)}

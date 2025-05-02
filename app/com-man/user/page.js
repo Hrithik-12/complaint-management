@@ -1,6 +1,8 @@
 'use client';
 
+import Header from '@/app/Component/Header';
 import { useState } from 'react';
+import toast from 'react-hot-toast';
 
 export default function UserComplaintForm() {
   const [form, setForm] = useState({
@@ -11,8 +13,6 @@ export default function UserComplaintForm() {
   });
 
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,126 +22,117 @@ export default function UserComplaintForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const toastId = toast.loading('Submitting complaint...');
     setLoading(true);
-    setError(null);
-    setSuccess(false);
 
     try {
       const res = await fetch('/api/complaint', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
       });
 
+      const data = await res.json();
+
       if (res.ok) {
-        setSuccess(true);
+        toast.success('Complaint submitted successfully!', { id: toastId });
         setForm({ title: '', category: '', priority: '', description: '' });
       } else {
-        const data = await res.json();
-        setError(data.message || 'Failed to submit complaint');
+        toast.error(data.message || 'Failed to submit complaint', { id: toastId });
       }
     } catch (err) {
-      setError('Failed to submit complaint');
+      toast.error('Something went wrong. Please try again.', { id: toastId });
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="max-w-lg w-full bg-white shadow-lg rounded-lg p-8">
-        <h2 className="text-3xl font-semibold text-center text-blue-600 mb-6">Register a Complaint</h2>
+    <div className="min-h-screen bg-cover bg-center " style={{ backgroundImage: "url('/bgg1.jpg')" }}
+    >
+      <Header />
+      <div className="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div className="bg-white bg-opacity-95 shadow-xl rounded-xl w-full max-w-2xl p-8 space-y-6">
+          <h2 className="text-3xl font-bold text-center text-blue-700">Register a Complaint</h2>
 
-        {success && (
-          <p className="text-green-500 text-center mb-4">
-            Your complaint has been submitted successfully!
-          </p>
-        )}
-        {error && (
-          <p className="text-red-500 text-center mb-4">
-            {error}
-          </p>
-        )}
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+              <input
+                type="text"
+                name="title"
+                value={form.title}
+                onChange={handleChange}
+                className="w-full border-2 border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                placeholder="Enter complaint title"
+                required
+              />
+            </div>
 
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Title</label>
-            <input
-              type="text"
-              name="title"
-              value={form.title}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-md px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter complaint title"
-              required
-            />
-          </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+              <select
+                name="category"
+                value={form.category}
+                onChange={handleChange}
+                className="w-full border-2 border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                required
+              >
+                <option value="">Select Category</option>
+                <option value="Product">Product</option>
+                <option value="Service">Service</option>
+                <option value="Billing">Billing</option>
+                <option value="Support">Support</option>
+              </select>
+            </div>
 
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
-            <select
-              name="category"
-              value={form.category}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-md px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            >
-              <option value="">Select Category</option>
-              <option value="Technical">Product</option>
-              <option value="Service">Service</option>
-              <option value="Billing">Billing</option>
-              <option value="Other">Support</option>
-            </select>
-          </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Priority</label>
+              <select
+                name="priority"
+                value={form.priority}
+                onChange={handleChange}
+                className="w-full border-2 border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                required
+              >
+                <option value="">Select Priority</option>
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+              </select>
+            </div>
 
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Priority</label>
-            <select
-              name="priority"
-              value={form.priority}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-md px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            >
-              <option value="">Select Priority</option>
-              <option value="Low">Low</option>
-              <option value="Medium">Medium</option>
-              <option value="High">High</option>
-            </select>
-          </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+              <textarea
+                name="description"
+                value={form.description}
+                onChange={handleChange}
+                rows="4"
+                className="w-full border-2 border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                placeholder="Describe your complaint"
+                required
+              />
+            </div>
 
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
-            <textarea
-              name="description"
-              value={form.description}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-md px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              rows="4"
-              placeholder="Describe your complaint"
-              required
-            />
-          </div>
-
-          <div className="flex justify-center space-x-4">
-            <button
-              type="button"
-              onClick={() => setForm({ title: '', category: '', priority: '', description: '' })}
-              className="px-6 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition-all duration-200"
-            >
-              Clear
-            </button>
-            <button
-              type="submit"
-              disabled={loading}
-              className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-all duration-200 disabled:bg-blue-400"
-            >
-              {loading ? 'Submitting...' : 'Submit Complaint'}
-            </button>
-          </div>
-        </form>
+            <div className="flex justify-between">
+              <button
+                type="button"
+                onClick={() => setForm({ title: '', category: '', priority: '', description: '' })}
+                className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-medium py-2 px-6 rounded-lg transition"
+              >
+                Clear
+              </button>
+              <button
+                type="submit"
+                disabled={loading}
+                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg transition disabled:bg-blue-400"
+              >
+                {loading ? 'Submitting...' : 'Submit Complaint'}
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );

@@ -1,6 +1,8 @@
 'use client';
+
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
 
 export default function SignupPage() {
   const router = useRouter();
@@ -18,26 +20,35 @@ export default function SignupPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (form.password !== form.confirmPassword) {
-      alert("Passwords don't match");
+      toast.error("Passwords don't match");
       return;
     }
     const { email, password, role } = form;
 
-    const res = await fetch('/api/auth/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        email,
-        password,
-        role
-      }),
-    });
+    const toastId = toast.loading('Creating account...');
 
-    const data = await res.json();
-    if (res.ok) {
-      router.push(`/com-man/${form.role}`);
-    } else {
-      alert(data.error);
+    try {
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email,
+          password,
+          role
+        }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        toast.success('Account created successfully!', { id: toastId });
+        router.push(`/com-man/${form.role}`);
+      } else {
+        toast.error(data.error || 'Registration failed', { id: toastId });
+      }
+    } catch (err) {
+      console.error('Registration error:', err);
+      toast.error('Something went wrong. Please try again.', { id: toastId });
     }
   };
 

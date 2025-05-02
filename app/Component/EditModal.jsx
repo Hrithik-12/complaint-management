@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
 
 export default function EditComplaintModal({ complaint, onClose, onSave }) {
   const [form, setForm] = useState({
@@ -17,12 +18,8 @@ export default function EditComplaintModal({ complaint, onClose, onSave }) {
     }
   }, [complaint]);
 
-  // Add effect to prevent background scrolling when modal is open
   useEffect(() => {
-    // Disable scrolling on the body
     document.body.style.overflow = 'hidden';
-    
-    // Re-enable scrolling when component unmounts
     return () => {
       document.body.style.overflow = 'auto';
     };
@@ -35,6 +32,8 @@ export default function EditComplaintModal({ complaint, onClose, onSave }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const toastId = toast.loading('Updating complaint...');
+
     try {
       const res = await fetch(`/api/complaint/${complaint._id}`, {
         method: 'PUT',
@@ -45,12 +44,15 @@ export default function EditComplaintModal({ complaint, onClose, onSave }) {
       if (res.ok) {
         const updated = await res.json();
         onSave(updated);
+        toast.success('Complaint updated successfully!', { id: toastId });
         onClose();
       } else {
-        console.error('Failed to update complaint');
+        const errorData = await res.json();
+        toast.error(errorData.error || 'Failed to update complaint', { id: toastId });
       }
     } catch (error) {
       console.error('Error updating complaint:', error);
+      toast.error('Something went wrong', { id: toastId });
     }
   };
 
@@ -58,14 +60,12 @@ export default function EditComplaintModal({ complaint, onClose, onSave }) {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
-      {/* Improved backdrop with blur effect */}
       <div 
         className="absolute inset-0 bg-black/40 backdrop-blur-sm" 
         onClick={onClose}
         aria-hidden="true"
       ></div>
 
-      {/* Modal Content */}
       <div 
         className="relative bg-white rounded-lg shadow-xl p-6 w-full max-w-md z-10 animate-fade-in"
         onClick={(e) => e.stopPropagation()}
@@ -85,6 +85,7 @@ export default function EditComplaintModal({ complaint, onClose, onSave }) {
         <div className="mb-4">
           <p className="text-gray-700 font-medium">Title: <span className="font-normal">{complaint.title}</span></p>
           <p className="text-gray-700 font-medium mt-1">Category: <span className="font-normal">{complaint.category}</span></p>
+          <p className="text-gray-700 font-medium mt-1">Description: <span className="font-normal">{complaint.description}</span></p>
         </div>
         
         <form onSubmit={handleSubmit}>
