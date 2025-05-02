@@ -1,6 +1,6 @@
 // middleware.js
 import { NextResponse } from 'next/server';
-import { jwtVerify } from 'jose'; // Edge-compatible JWT library
+import { jwtVerify } from 'jose'; 
 
 export async function middleware(request) {
   const path = request.nextUrl.pathname;
@@ -14,7 +14,7 @@ export async function middleware(request) {
   // If path is public and user has token, redirect to dashboard
   if (isPublicPath && token) {
     try {
-      // Verify token using jose library (Edge-compatible)
+      // Verify token using jose library 
       const secret = new TextEncoder().encode(process.env.JWT_SECRET);
       const { payload } = await jwtVerify(token, secret);
       

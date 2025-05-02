@@ -31,11 +31,9 @@ export default function Header() {
   return (
     <header className="bg-white shadow-md">
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
-        {/* Logo */}
       <Link href={'/'} >
       <div className="flex items-center cursor-pointer ">
           <div className="h-10 w-10 relative mr-2">
-            {/* Replace with your actual logo */}
             <div className="h-10 w-10 bg-blue-600 rounded-md flex items-center justify-center">
               <span className="text-white font-bold text-xl">CM</span>
             </div>
@@ -43,7 +41,6 @@ export default function Header() {
           <span className="text-xl font-semibold text-gray-800">Complaint Management</span>
         </div></Link>
         
-        {/* Logout Button */}
         <button
           onClick={handleLogout}
           className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md transition duration-300 flex items-center"

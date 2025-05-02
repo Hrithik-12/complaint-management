@@ -1,4 +1,3 @@
-// /app/api/auth/logout/route.js
 export async function POST() {
     // Create an expired cookie to effectively remove the token
     return new Response(JSON.stringify({ message: 'Logged out successfully' }), {
