@@ -1,36 +1,203 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-## Getting Started
+# 🛠 Complaint Management System
 
-First, run the development server:
+A full-stack web application enabling users to submit complaints and allowing administrators to manage them efficiently. Built using **Next.js**, **React**, **Node.js**, and **MongoDB**, with **JWT authentication** and **Nodemailer** integration for real-time email notifications.
+
+---
+
+## 🎯 Objective
+
+Develop a complaint tracking system where users can raise complaints and admins can view, filter, update, and resolve them—while receiving email alerts on complaint submission and updates.
+
+---
+
+## 📸 Features
+
+### 👤 User Interface
+
+* Submit complaints via a form with:
+
+  * **Title**, **Description**
+  * **Category**: Product, Service, Support
+  * **Priority**: Low, Medium, High
+* Fully responsive design
+
+### 🛠 Admin Interface
+
+* View all complaints in a table
+* Filter by **Status** or **Priority**
+* Update complaint status (Pending, In Progress, Resolved)
+* Delete or resolve complaints
+* Role-based access via **JWT**
+
+### 📩 Email Notifications
+
+* Email on **new complaint submission** to admin
+* Email on **status update** to admin
+
+---
+
+## 🧰 Tech Stack
+
+| Technology   | Purpose                           |
+| ------------ | --------------------------------- |
+| React.js     | Frontend user interface           |
+| Next.js      | Fullstack framework (API + SSR)   |
+| MongoDB      | Complaint storage                 |
+| Mongoose     | Object modeling for MongoDB       |
+| Nodemailer   | Email notification service        |
+| JWT          | Authentication and route security |
+| Tailwind CSS | (Optional) UI Styling             |
+
+---
+
+## 🔐 JWT Authentication
+
+Routes `/com-man/user` and `/com-man/admin` are protected using JWT.
+
+### ✅ Middleware-based Route Protection
+
+```bash
+middleware.js protects:
+- /com-man/user
+- /com-man/admin
+```
+
+Tokens are stored in cookies and verified on each request. Unauthorized users are redirected to `/login`.
+
+---
+
+## ⚙️ Setup Instructions
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/<your-username>/complaint-management-system.git
+cd complaint-management-system
+```
+
+### 2. Install Dependencies
+
+```bash
+npm install
+```
+
+### 3. Create `.env.local`
+
+```env
+# MongoDB
+MONGO_URL=mongodb+srv://<username>:<password>@cluster.mongodb.net/complaints_db
+
+# Email (Gmail SMTP or other)
+EMAIL_USER=your_email@gmail.com
+EMAIL_PASS=your_app_password
+EMAIL_TO=admin@example.com
+
+# JWT
+JWT_SECRET=your_jwt_secret
+```
+
+> 💡 Use an **App Password** if using Gmail with 2FA: [Generate App Password](https://myaccount.google.com/apppasswords)
+
+---
+
+### 4. Start the Dev Server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Go to: `http://localhost:3000`
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 📦 MongoDB Schema
 
-## Learn More
+**Complaint Model**
 
-To learn more about Next.js, take a look at the following resources:
+```js
+{
+  title: String,
+  description: String,
+  category: String,
+  priority: String,
+  status: { type: String, default: "Pending" },
+  dateSubmitted: { type: Date, default: Date.now }
+}
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🔗 API Endpoints
 
-## Deploy on Vercel
+| Method | Endpoint             | Description              |
+| ------ | -------------------- | ------------------------ |
+| POST   | `/api/complaint`     | Create new complaint     |
+| GET    | `/api/complaint`     | Get all complaints       |
+| PUT    | `/api/complaint/:id` | Update complaint details |
+| DELETE | `/api/complaint/:id` | Delete complaint         |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📧 Email Integration
+
+* Triggered using **Nodemailer**
+* Located in `app/utility/mailer.js`
+* Uses Gmail SMTP
+
+### On Submission:
+
+Sends email to admin with complaint title, category, priority, and description.
+
+### On Status Update:
+
+Sends email with complaint title, new status, and update date.
+
+---
+
+## 🧪 Testing
+
+Use **Postman** or browser to:
+
+* Submit new complaints
+* Update complaint status
+* Ensure admin receives emails
+
+---
+
+## 🚀 Deployment
+
+Recommended: [**Vercel**](https://vercel.com)
+
+Set environment variables in the Vercel dashboard.
+
+Live Demo: \[Add your link here]
+
+---
+
+## ✅ Evaluation Checklist
+
+* [x] Clean, modular code
+* [x] MongoDB CRUD ops
+* [x] JWT-based route protection
+* [x] Email notifications
+* [x] UI/UX responsive design
+* [x] Git history + branching
+
+---
+
+## 🧠 Optional Enhancements
+
+* JWT refresh tokens
+* Admin dashboard analytics
+* Image/file attachments in complaints
+
+---
+
+## 👨‍💻 Author
+
+**Hrithik** — [LinkedIn](https://www.linkedin.com/in/hrithikgarg1/)
+
+---
+
+Would you like me to save this as a file or help you push it to your GitHub repo?
